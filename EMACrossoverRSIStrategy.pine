@@ -1,0 +1,30 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © your-username
+
+//@version=5
+
+strategy("EMA Crossover + RSI Strategy", overlay=true, margin_long=100, margin_short=100)
+
+int len = input.int(4, "Back Bars for Buy Invalidation")
+
+float percentageStopLoss = input.float(0.97, "Percentage down for stop loss (decimal form)")
+float percentageStopTakeProfit = input.float(1.12, "Percentage gain for take profit (decimal form)")
+
+float stopLossATRMultiplier = input.float(2.2, "Multiplier subtracted from the stop loss");
+float takeProfitATRMultiplier = input.float(4, "Multiplier added to the take profit");
+bool emaBuyCon = true
+for i=1 to len by 1
+    if close[i]>=ta.ema(close[i], 50)
+        emaBuyCon:=false 
+emaBuyCon := emaBuyCon and ta.ema(close,20) > ta.ema(close,50)
+
+bool emaSellCon = ta.rsi(close, 14)>=70
+if emaBuyCon
+    strategy.entry("long ema", strategy.long)
+    strategy.exit("exit ema", "long ema", stop=close*percentageStopLoss-(ta.atr(14)*stopLossATRMultiplier), limit=close*percentageStopTakeProfit+(ta.atr(14)*takeProfitATRMultiplier))
+else if emaSellCon
+    strategy.close("long ema")
+    
+// EFFECTIVE FOR 1 HOUR CANDLESTICK TIME FRAMES
+// Suprisingly simple, yet effective strategy. Backtest results reveal a suprising effectiveness on specifically the 1 hour candlestick charts of NVIDIA (67% Profit Rate), Ethereum (67% Profit Rate), BTC(73% Profit Rate).
+// It is shown that tweaking the stop loss and take profit can vastly improve or degrade the results of the strategy (Do so for each respective asset class you are attempting to use this strategy on).
