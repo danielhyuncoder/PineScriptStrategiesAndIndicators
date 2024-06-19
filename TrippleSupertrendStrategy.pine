@@ -1,0 +1,33 @@
+//@version=5
+strategy("Tripple Supertrend Strategy", overlay = true)
+
+[supertrend1, direction1] = ta.supertrend(3, 12)
+[supertrend2, direction2] = ta.supertrend(1, 10)
+[supertrend3, direction3] = ta.supertrend(2, 11)
+//ta.supertrend()
+supertrend1 := barstate.isfirst ? na : supertrend1
+supertrend2 := barstate.isfirst ? na : supertrend2
+supertrend3 := barstate.isfirst ? na : supertrend3
+
+plot(direction1 < 0 ? supertrend1 : na, "Up Trend",   color = color.green, style = plot.style_linebr)
+plot(direction1 < 0 ? na : supertrend1, "Down Trend", color = color.red,   style = plot.style_linebr)
+
+plot(direction2 < 0 ? supertrend2 : na, "Up Trend",   color = color.green, style = plot.style_linebr)
+plot(direction2 < 0 ? na : supertrend2, "Down Trend", color = color.red,   style = plot.style_linebr)
+
+plot(direction3 < 0 ? supertrend3 : na, "Up Trend",   color = color.green, style = plot.style_linebr)
+plot(direction3 < 0 ? na : supertrend3, "Down Trend", color = color.red,   style = plot.style_linebr)
+
+
+
+bool superTrendCon=direction1 < 0 and direction2 < 0 and direction3 < 0 and (direction1[1]>=0 or direction2[1]>=0 or direction3[1]>=0)
+
+
+
+if superTrendCon 
+    strategy.entry("long", strategy.long)
+    strategy.exit("exit", "long", stop=close-(ta.atr(14)*3))
+
+
+if direction1 >=0 or direction2 >=0 or direction3 >=0 
+    strategy.close("long")
