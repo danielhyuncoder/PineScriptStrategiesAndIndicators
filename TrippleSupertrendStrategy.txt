@@ -1,0 +1,2 @@
+The TrippleSupertrendStrategy is a pinescript strategy that utilizes three different supertrend lines, (12, 3), (10, 1), and (11, 2) (length, factor). Utilizing these trends, whenever all of them flashes green, it buys and sells whenever either one of them flashes red.
+This relatively simple strategy has on average, slightly above 50% sucess rate with an average profit factor of 2. That being said, this strategy can easiley be improved on by adding other stratgies to it as well. 
